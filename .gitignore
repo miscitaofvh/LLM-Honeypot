@@ -1,0 +1,7 @@
+logs/
+siem/elasticsearch/data/
+*.log
+*.pcap
+*.json
+.env
+.DS_Store

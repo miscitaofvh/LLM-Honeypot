@@ -1,0 +1,20 @@
+filebeat.inputs:
+- type: filestream
+  id: dvwa-json-logs
+  enabled: true
+  paths:
+    - /var/log/dvwa/access.log
+  parsers:
+    - ndjson:
+        target: ""
+        overwrite_keys: true
+        add_error_key: true
+
+setup.ilm.enabled: false
+
+output.elasticsearch:
+  hosts: ["http://elasticsearch:9200"]
+  index: "honeypot-logs-%{+yyyy.MM.dd}"
+
+setup.template.name: "honeypot"
+setup.template.pattern: "honeypot-logs-*"
