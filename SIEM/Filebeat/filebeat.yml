@@ -10,6 +10,17 @@ filebeat.inputs:
         overwrite_keys: true
         add_error_key: true
 
+- type: filestream
+  id: suricata-eve-logs
+  enabled: true
+  paths:
+    - /var/log/suricata/eve.json
+  parsers:
+    - ndjson:
+        target: ""
+        overwrite_keys: true
+        add_error_key: true
+        
 setup.ilm.enabled: false
 
 output.elasticsearch:

@@ -1,0 +1,7 @@
+alert http any any -> $HOME_NET any (msg:"[SQLI] Single Quote Detected in URI"; flow:established,to_server; http.uri; content:"'"; fast_pattern; classtype:web-application-attack; sid:50300001; rev:1;)
+alert http any any -> $HOME_NET any (msg:"[SQLI] UNION Keyword Detected in URI"; flow:established,to_server; http.uri; content:"union"; nocase; classtype:web-application-attack; sid:50300002; rev:1;)
+alert http any any -> $HOME_NET any (msg:"[SQLI] SELECT Keyword Detected in URI"; flow:established,to_server; http.uri; content:"select"; nocase; classtype:web-application-attack; sid:50300003; rev:1;)
+alert http any any -> $HOME_NET any (msg:"[SQLI] Single Quote Detected in POST Body"; flow:established,to_server; http.client_body; content:"'"; fast_pattern; classtype:web-application-attack; sid:50300004; rev:1;)
+alert http any any -> $HOME_NET any (msg:"[SQLI] UNION Keyword Detected in POST Body"; flow:established,to_server; http.client_body; content:"union"; nocase; classtype:web-application-attack; sid:50300005; rev:1;)
+alert http any any -> $HOME_NET any (msg:"[SQLI] SELECT Keyword Detected in POST Body"; flow:established,to_server; http.client_body; content:"select"; nocase; classtype:web-application-attack; sid:50300006; rev:1;)
+alert http any any -> $HOME_NET any (msg:"[SQLI] Critical UNION SELECT Attempt"; flow:established,to_server; http.uri; content:"union"; nocase; content:"select"; nocase; distance:1; classtype:web-application-attack; sid:50300007; rev:1;)

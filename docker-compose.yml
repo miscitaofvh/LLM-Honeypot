@@ -7,7 +7,8 @@ services:
     ports:
       - "8080:80"
     networks:
-      - network
+      network: 
+        ipv4_address: 172.20.0.10
     volumes:
       - ./logs/dvwa:/var/log/apache2
 
@@ -31,9 +32,25 @@ services:
     ports:
       - "5601:5601"
     networks:
-      - network
+      network:
+        ipv4_address: 172.20.0.11
     depends_on:
       - elasticsearch
+
+  suricata:
+    image: jasonish/suricata:latest
+    container_name: suricata_ids
+    restart: always
+    cap_add:
+      - NET_ADMIN
+      - SYS_NICE
+      - NET_RAW
+    network_mode: "service:dvwa_target"
+    command: -i eth0
+    volumes:
+      - ./logs/suricata:/var/log/suricata
+      - ./sensors/suricata/local.rules:/etc/suricata/local.rules
+      - ./sensors/suricata/suricata.yaml:/etc/suricata/suricata.yaml
 
   filebeat:
     image: docker.elastic.co/beats/filebeat:8.10.2
@@ -43,6 +60,7 @@ services:
     volumes:
       - ./siem/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
       - ./logs/dvwa:/var/log/dvwa:ro
+      - ./logs/suricata:/var/log/suricata:ro
     networks:
       - network
     depends_on:
@@ -53,4 +71,4 @@ networks:
     driver: bridge
     ipam:
       config:
-        - subnet: 172.20.0.0/16
+        - subnet: 172.20.0.0/24

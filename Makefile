@@ -1,16 +1,16 @@
-.PHONY: up down clean logs build attack
+.PHONY: up down clean
 
 up:
-	docker-compose up -d
-
-build:
 	docker-compose up -d --build
+	@sleep 5
+	@docker exec suricata_ids suricata-update
+	@docker restart suricata_ids
 
 down:
 	docker-compose down
 
-logs:
-	tail -f logs/dvwa/access.log
-
-# attack:
-# 	@curl -s -o /dev/null -w "Status: %{http_code}\n" "http://localhost:8080/vulnerabilities/sqli/?id=1'+OR+'1'='1&Submit=Submit"
+clean:
+	docker-compose down -v
+	@rm -rf logs/dvwa/* logs/suricata/*
+	@mkdir -p logs/dvwa logs/suricata
+	@touch logs/dvwa/access.log logs/dvwa/error.log
